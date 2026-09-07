@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "CloudMosaic Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Contact Form",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{BASE_URL}}/contact/", "host": ["{{BASE_URL}}"], "path": ["contact", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"service\": \"Cloud Migration\",\n  \"message\": \"I would like to discuss a project.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Schedule Demo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{BASE_URL}}/meetings/", "host": ["{{BASE_URL}}"], "path": ["meetings", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"service\": \"Cloud Migration\",\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"1234567890\",\n  \"company\": \"Tech Inc\",\n  \"date\": \"2026-10-10\",\n  \"time\": \"14:30\",\n  \"notes\": \"Looking forward to it.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Newsletter Subscribe",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{BASE_URL}}/newsletter/subscribe/", "host": ["{{BASE_URL}}"], "path": ["newsletter", "subscribe", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Jobs",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{BASE_URL}}/careers/jobs/", "host": ["{{BASE_URL}}"], "path": ["careers", "jobs", ""] }
+      }
+    },
+    {
+      "name": "Submit Job Application",
+      "request": {
+        "method": "POST",
+        "url": { "raw": "{{BASE_URL}}/careers/jobs/apply/", "host": ["{{BASE_URL}}"], "path": ["careers", "jobs", "apply", ""] },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "job", "value": "REPLACE_WITH_JOB_ID", "type": "text" },
+            { "key": "name", "value": "Applicant", "type": "text" },
+            { "key": "email", "value": "applicant@example.com", "type": "text" },
+            { "key": "resume", "type": "file", "src": [] }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Services",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{BASE_URL}}/services/", "host": ["{{BASE_URL}}"], "path": ["services", ""] }
+      }
+    },
+    {
+      "name": "Get Testimonials",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{BASE_URL}}/testimonials/", "host": ["{{BASE_URL}}"], "path": ["testimonials", ""] }
+      }
+    },
+    {
+      "name": "Submit Testimonial",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{BASE_URL}}/testimonials/", "host": ["{{BASE_URL}}"], "path": ["testimonials", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"new@example.com\",\n  \"service\": \"Design\",\n  \"rating\": 5,\n  \"text\": \"Awesome!\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://127.0.0.1:8000/api/v1",
+      "type": "string"
+    }
+  ]
+}
