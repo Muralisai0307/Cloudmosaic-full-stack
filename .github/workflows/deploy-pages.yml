@@ -1,0 +1,74 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cloudmosaic-react-main/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy React Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: cloudmosaic-react-main/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: cloudmosaic-react-main
+        run: |
+          npm ci --legacy-peer-deps
+
+      - name: Build Static Production SPA
+        working-directory: cloudmosaic-react-main
+        env:
+          PUBLIC_URL: "https://muralisai0307.github.io/Cloudmosaic-full-stack"
+          CI: false
+        run: |
+          npm run build
+
+      - name: Ensure 404.html Exists for SPA Routing
+        run: |
+          if [ -f cloudmosaic-react-main/public/404.html ]; then
+            cp cloudmosaic-react-main/public/404.html cloudmosaic-react-main/build/404.html
+          fi
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./cloudmosaic-react-main/build
+          commit_message: "deploy: build React frontend for GitHub Pages [skip ci]"
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./cloudmosaic-react-main/build
+
+      - name: Deploy to GitHub Pages (Actions Environment)
+        id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
