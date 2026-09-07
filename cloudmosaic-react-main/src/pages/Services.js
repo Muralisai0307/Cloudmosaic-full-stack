@@ -93,7 +93,6 @@ function Services() {
 
   const [servicesList, setServicesList] = useState(defaultServices);
   const [isLoadingServices, setIsLoadingServices] = useState(false);
-  const [servicesError, setServicesError] = useState(null);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -248,7 +247,7 @@ function Services() {
               <i className="fas fa-spinner fa-pulse" style={{ fontSize: '2rem', color: 'var(--accent-color)' }} aria-hidden="true"></i>
               <p style={{ marginTop: '1rem' }}>Loading services...</p>
             </div>
-          ) : servicesList.length > 0 ? (
+          ) : (
             <div className="service-grid-3d">
               {servicesList.map((service, idx) => (
                 <div key={idx} className="service-card-3d" data-aos="flip-left" data-aos-delay={200 + ((idx % 3) * 50)}>
