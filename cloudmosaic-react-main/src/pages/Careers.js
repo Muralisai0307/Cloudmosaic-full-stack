@@ -93,19 +93,18 @@ function Careers() {
   };
 
   const [jobs, setJobs] = useState([]);
-  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [loadingJobs, setLoadingJobs] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await apiService.getJobs();
-        if (response.success) {
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
           setJobs(response.data);
+          if (window.AOS) window.AOS.refresh();
         }
       } catch (err) {
-        console.error("Failed to fetch jobs:", err);
-      } finally {
-        setLoadingJobs(false);
+        console.log("No active job postings from backend, displaying coming soon state.");
       }
     };
     fetchJobs();
@@ -203,13 +202,8 @@ function Careers() {
       {/* ===== OPEN POSITIONS ===== */}
       <section className="open-positions">
         <div className="container">
-          {loadingJobs ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
-              <i className="fas fa-spinner fa-pulse" style={{ fontSize: '2rem' }}></i>
-              <p>Loading open positions...</p>
-            </div>
-          ) : jobs.length > 0 ? (
-            <div className="jobs-list" data-aos="fade-up">
+          {jobs.length > 0 ? (
+            <div className="jobs-list">
               <h2 className="section-title text-center">Current Openings</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
                 {jobs.map(job => (
@@ -224,7 +218,7 @@ function Careers() {
               </div>
             </div>
           ) : (
-            <div className="coming-soon-wrapper" data-aos="fade-up">
+            <div className="coming-soon-wrapper">
               <h2 className="section-title text-center">
                 <i className="fas fa-clock" style={{ marginRight: '12px' }} aria-hidden="true"></i>
                 Open Positions Coming Soon

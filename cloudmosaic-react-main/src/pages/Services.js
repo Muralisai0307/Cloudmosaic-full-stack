@@ -13,18 +13,93 @@ import {
 } from '../utils/helpers';
 import '../styles/Services.css';
 
+const defaultServices = [
+  {
+    icon: 'fa-cloud-upload-alt',
+    title: 'Cloud Migration',
+    tags: ['AWS', 'Azure', 'GCP'],
+    desc: 'Seamless migration with minimal downtime. We handle everything from planning to execution, ensuring 99.9% uptime during transition.',
+    features: ['AWS/Azure/GCP certified', 'Lift-and-shift or re-architecture', 'Cost optimization (avg 40% savings)', '24/7 monitoring & support'],
+    link: '/contact',
+    btnText: 'Get Quote'
+  },
+  {
+    icon: 'fa-shield-alt',
+    title: 'Security & Compliance',
+    tags: ['GDPR', 'HIPAA', 'SOC2'],
+    desc: 'Comprehensive security audits and compliance management. We help you achieve and maintain industry certifications.',
+    features: ['Security assessments & audits', 'Compliance automation', 'Penetration testing', '24/7 incident response'],
+    link: '/contact',
+    btnText: 'Learn More'
+  },
+  {
+    icon: 'fa-users-cog',
+    title: 'HR Consulting',
+    tags: ['Talent', 'HRMS', 'Payroll'],
+    desc: 'Comprehensive HR solutions including recruitment, performance management, and employee engagement strategies.',
+    features: ['Talent acquisition & headhunting', 'HRMS implementation', 'Performance management', 'Employee engagement programs'],
+    link: '/contact',
+    btnText: 'Consult Expert'
+  },
+  {
+    icon: 'fa-robot',
+    title: 'AI & Automation',
+    tags: ['ML', 'RPA', 'Analytics'],
+    desc: 'Intelligent solutions that automate processes and provide actionable insights using cutting-edge AI technologies.',
+    features: ['Process automation (RPA)', 'Predictive analytics', 'Custom ML models', 'Business intelligence'],
+    link: '/contact',
+    btnText: 'Explore AI'
+  },
+  {
+    icon: 'fa-code',
+    title: 'Web Applications',
+    tags: ['React', 'Node.js', 'Python'],
+    desc: 'End-to-end development from architecture to deployment. We build with the latest frameworks and best practices.',
+    features: ['React/Angular/Vue frontend', 'Node.js/Python/Java backend', 'Cloud-native architecture', 'Progressive Web Apps (PWA)'],
+    link: '/contact',
+    btnText: 'Start Project'
+  },
+  {
+    icon: 'fa-server',
+    title: 'Managed IT',
+    tags: ['24/7', 'Backup', 'Support'],
+    desc: 'Proactive monitoring and rapid response to keep your business running 24/7. Average response time under 15 minutes.',
+    features: ['24/7 infrastructure monitoring', 'Automated backups & recovery', 'Disaster recovery planning', 'Help desk support'],
+    link: '/contact',
+    btnText: 'Get Started'
+  },
+  {
+    icon: 'fa-chart-pie',
+    title: 'IT Consulting',
+    tags: ['Strategy', 'Digital', 'Roadmap'],
+    desc: 'Expert guidance for your digital transformation journey. We help businesses modernize their IT infrastructure.',
+    features: ['Digital strategy & roadmap', 'Technology architecture review', 'Vendor selection & management', 'Digital transformation'],
+    link: '/contact',
+    btnText: 'Get Advice'
+  },
+  {
+    icon: 'fa-user-plus',
+    title: 'Staff Augmentation',
+    tags: ['IT Pros', 'HR Pros', 'Remote'],
+    desc: 'Rapid access to highly qualified IT and HR professionals to scale your team. Average placement time: 2 weeks.',
+    features: ['Pre-vetted professionals', 'Flexible engagement models', 'Remote or on-site', 'Rapid deployment'],
+    link: '/contact',
+    btnText: 'Find Talent'
+  }
+];
+
 function Services() {
   const { success, error, warning } = useNotification();
 
-  const [servicesList, setServicesList] = useState([]);
-  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [servicesList, setServicesList] = useState(defaultServices);
+  const [isLoadingServices, setIsLoadingServices] = useState(false);
   const [servicesError, setServicesError] = useState(null);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const response = await apiService.getServices();
-        if (response.success && response.data) {
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
           const mapped = response.data.map(service => ({
             ...service,
             icon: service.icon || 'fa-cloud',
@@ -35,14 +110,12 @@ function Services() {
           setServicesList(mapped);
         }
       } catch (err) {
-        setServicesError(err.message || 'Failed to load services.');
-        error(err.message || 'Failed to load services.');
-      } finally {
-        setIsLoadingServices(false);
+        // Silently use default services on static hosts or when backend is offline
+        console.log('Using default services:', err.message);
       }
     };
     fetchServices();
-  }, [error]);
+  }, []);
 
   // Recommender State
   const [quizStarted, setQuizStarted] = useState(false);
@@ -175,17 +248,7 @@ function Services() {
               <i className="fas fa-spinner fa-pulse" style={{ fontSize: '2rem', color: 'var(--accent-color)' }} aria-hidden="true"></i>
               <p style={{ marginTop: '1rem' }}>Loading services...</p>
             </div>
-          ) : servicesError ? (
-            <div className="text-center" style={{ padding: '3rem 0', color: 'var(--error-color)' }}>
-              <i className="fas fa-exclamation-circle" style={{ fontSize: '2rem' }} aria-hidden="true"></i>
-              <p style={{ marginTop: '1rem' }}>{servicesError}</p>
-            </div>
-          ) : servicesList.length === 0 ? (
-            <div className="text-center" style={{ padding: '3rem 0' }}>
-              <i className="fas fa-info-circle" style={{ fontSize: '2rem', color: 'var(--text-secondary)' }} aria-hidden="true"></i>
-              <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>No services are currently available. Check back soon!</p>
-            </div>
-          ) : (
+          ) : servicesList.length > 0 ? (
             <div className="service-grid-3d">
               {servicesList.map((service, idx) => (
                 <div key={idx} className="service-card-3d" data-aos="flip-left" data-aos-delay={200 + ((idx % 3) * 50)}>
