@@ -85,6 +85,33 @@ const defaultServices = [
     features: ['Pre-vetted professionals', 'Flexible engagement models', 'Remote or on-site', 'Rapid deployment'],
     link: '/contact',
     btnText: 'Find Talent'
+  },
+  {
+    icon: 'fa-chart-bar',
+    title: 'Data Analytics',
+    tags: ['Big Data', 'BI', 'Predictive'],
+    desc: 'Transform your raw data into actionable business insights with our advanced analytics solutions.',
+    features: ['Data warehousing', 'Real-time analytics', 'Interactive dashboards', 'Predictive modeling'],
+    link: '/contact',
+    btnText: 'Explore Data'
+  },
+  {
+    icon: 'fa-infinity',
+    title: 'DevOps Services',
+    tags: ['CI/CD', 'Docker', 'Kubernetes'],
+    desc: 'Streamline your development and operations with modern DevOps practices and tools.',
+    features: ['CI/CD pipeline setup', 'Container orchestration', 'Infrastructure as code', '24/7 monitoring'],
+    link: '/contact',
+    btnText: 'Optimize Flow'
+  },
+  {
+    icon: 'fa-mobile-alt',
+    title: 'Mobile Development',
+    tags: ['iOS', 'Android', 'Flutter'],
+    desc: 'Deliver powerful mobile experiences that engage users and drive business growth.',
+    features: ['Native iOS & Android apps', 'Cross-platform (React Native)', 'App Store deployment', 'Ongoing maintenance'],
+    link: '/contact',
+    btnText: 'Build App'
   }
 ];
 
@@ -93,6 +120,20 @@ function Services() {
 
   const [servicesList, setServicesList] = useState(defaultServices);
   const [isLoadingServices, setIsLoadingServices] = useState(false);
+  const INITIAL_VISIBLE_COUNT = 8;
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLoadMoreServices = () => {
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      setVisibleCount(servicesList.length);
+      setIsLoadingMore(false);
+      if (window.AOS) {
+        window.AOS.refresh();
+      }
+    }, 600);
+  };
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -248,36 +289,55 @@ function Services() {
               <p style={{ marginTop: '1rem' }}>Loading services...</p>
             </div>
           ) : (
-            <div className="service-grid-3d">
-              {servicesList.map((service, idx) => (
-                <div key={idx} className="service-card-3d" data-aos="flip-left" data-aos-delay={200 + ((idx % 3) * 50)}>
-                  <div className="card-front">
-                    <div className="service-icon-large">
-                      <i className={`fas ${service.icon}`} aria-hidden="true"></i>
+            <>
+              <div className="service-grid-3d">
+                {servicesList.slice(0, visibleCount).map((service, idx) => (
+                  <div key={idx} className="service-card-3d" data-aos="flip-left" data-aos-delay={200 + ((idx % 3) * 50)}>
+                    <div className="card-front">
+                      <div className="service-icon-large">
+                        <i className={`fas ${service.icon}`} aria-hidden="true"></i>
+                      </div>
+                      <h3>{service.title}</h3>
+                      <div className="service-tags">
+                        {Array.isArray(service.tags) && service.tags.map((tag, tIdx) => (
+                          <span key={tIdx}>{tag}</span>
+                        ))}
+                      </div>
+                      <div className="card-hint">
+                        <i className="fas fa-sync-alt" aria-hidden="true"></i> Hover to flip
+                      </div>
                     </div>
-                    <h3>{service.title}</h3>
-                    <div className="service-tags">
-                      {Array.isArray(service.tags) && service.tags.map((tag, tIdx) => (
-                        <span key={tIdx}>{tag}</span>
-                      ))}
-                    </div>
-                    <div className="card-hint">
-                      <i className="fas fa-sync-alt" aria-hidden="true"></i> Hover to flip
+                    <div className="card-back">
+                      <h3>{service.title}</h3>
+                      <p className="service-desc">{service.desc}</p>
+                      <ul className="service-features-3d">
+                        {Array.isArray(service.features) && service.features.map((feature, fIdx) => (
+                          <li key={fIdx}><i className="fas fa-check-circle" aria-hidden="true"></i> {feature}</li>
+                        ))}
+                      </ul>
+                      <Link to={service.link} className="btn-3d">{service.btnText} <i className="fas fa-arrow-right" aria-hidden="true"></i></Link>
                     </div>
                   </div>
-                  <div className="card-back">
-                    <h3>{service.title}</h3>
-                    <p className="service-desc">{service.desc}</p>
-                    <ul className="service-features-3d">
-                      {Array.isArray(service.features) && service.features.map((feature, fIdx) => (
-                        <li key={fIdx}><i className="fas fa-check-circle" aria-hidden="true"></i> {feature}</li>
-                      ))}
-                    </ul>
-                    <Link to={service.link} className="btn-3d">{service.btnText} <i className="fas fa-arrow-right" aria-hidden="true"></i></Link>
-                  </div>
+                ))}
+              </div>
+
+              {visibleCount < servicesList.length && (
+                <div className="services-load-more" data-aos="fade-up">
+                  <button 
+                    className="load-more-btn" 
+                    id="loadMoreServices"
+                    onClick={handleLoadMoreServices}
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? (
+                      <>Loading... <i className="fas fa-spinner fa-pulse" aria-hidden="true"></i></>
+                    ) : (
+                      <>Load More Services <i className="fas fa-arrow-down" aria-hidden="true"></i></>
+                    )}
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </section>
