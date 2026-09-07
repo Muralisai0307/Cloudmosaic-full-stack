@@ -44,6 +44,19 @@ function ScrollToTop() {
   return null;
 }
 
+// Helper to resolve clean router basename
+function getBasename() {
+  const rawUrl = process.env.PUBLIC_URL || '';
+  if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+    try {
+      return new URL(rawUrl).pathname.replace(/\/$/, '');
+    } catch {
+      return '';
+    }
+  }
+  return rawUrl.replace(/^\/https?:\/\/[^/]+/, '').replace(/\/$/, '');
+}
+
 function App() {
   useEffect(() => {
     AOS.init({
@@ -58,7 +71,7 @@ function App() {
     <ErrorBoundary>
       <HelmetProvider>
         <NotificationProvider>
-          <Router basename={process.env.PUBLIC_URL}>
+          <Router basename={getBasename()}>
             <ScrollToTop />
             <Suspense fallback={<Loading fullPage={true} />}>
               <Routes>

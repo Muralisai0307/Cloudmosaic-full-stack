@@ -42,7 +42,6 @@ jobs:
       - name: Build Static Production SPA
         working-directory: cloudmosaic-react-main
         env:
-          PUBLIC_URL: "https://muralisai0307.github.io/Cloudmosaic-full-stack"
           CI: false
         run: |
           npm run build
